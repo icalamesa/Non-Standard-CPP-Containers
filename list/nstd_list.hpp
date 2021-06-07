@@ -88,7 +88,7 @@ namespace nstd
 	    template<class unary_predicate>
 	    void remove_if(unary_predicate foo);
 
-	    template<class foo>
+	    template<class unary_predicate>
 	    void remove_if(iterator& begin, iterator& end, unary_predicate foo);
 
 	    void remove(iterator& begin, iterator& end, const T& value);
@@ -246,13 +246,13 @@ namespace nstd
     template<typename T>
     T& list<T>::front()
     {
-	return this->_first->data;
+	return this->_first->next->get_data();
     }
 
     template<typename T>
     T& list<T>::back()
     {
-	return this->_last->prev;
+	return this->_last->prev->get_data();
     }
 
     template<typename T>

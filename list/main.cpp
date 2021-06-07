@@ -38,7 +38,9 @@ int main()
     my_list.pop_front();
     print_list(my_list);
 
-    my_list.clear();
+    //my_list.clear();
+    my_list.erase(my_list.begin(), my_list.end());
+    my_list.erase(my_list.begin());
     print_list(my_list);
 
 }

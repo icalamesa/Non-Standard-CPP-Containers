@@ -5,6 +5,11 @@ namespace nstd
     template <typename T>
     class list
     {
+	public:
+	    class iterator;
+
+	private:
+
 	struct Node
 	{
 	    Node* prev = nullptr;
@@ -22,6 +27,7 @@ namespace nstd
 
 	//Deletes the Node pointed by the first pointer, too.
 	void recursive_removal(Node* current);
+	void recursive_ranged_erasal(iterator first, iterator end);
 
 	public:
 	    list();
@@ -41,6 +47,7 @@ namespace nstd
 		
 		friend iterator list<T>::begin();
 		friend iterator list<T>::end();
+		friend list<T>;
 
 		public:
 		    //operators
@@ -79,10 +86,10 @@ namespace nstd
 
 	    //TO DO
 
-	    iterator insert(const iterator& it);
+	    iterator insert(const iterator& pos, const T& elem);
 
-	    void erase(iterator& it);
-	    void erase(iterator& first, iterator& end);
+	    void erase(iterator it);
+	    void erase(iterator first, iterator end);
 	    
 	    //removes element following specific criteria
 	    template<class unary_predicate>
@@ -297,6 +304,47 @@ namespace nstd
 	aux->prev = this->_first;
 
 	this->_size--;
+    }
+    
+    template<typename T>
+    typename list<T>::iterator list<T>::insert(const list<T>::iterator& pos, const T& elem)
+    { 
+	Node* ptr = new Node(pos.current->prev, pos.current, elem);
+	pos.current->prev->next = ptr;
+	pos.current->prev = ptr;
+	auto aux_it = pos;
+	return --aux_it;
+    }
+    
+    template<typename T>
+    void list<T>::erase(list<T>::iterator it)
+    {
+	//need exception handling
+	auto aux_it = it;
+	this->recursive_ranged_erasal(it, ++aux_it);
+
+    }
+    
+    template <typename T>
+    void list<T>::recursive_ranged_erasal(list<T>::iterator first, list<T>::iterator end)
+    {
+	if (first != end)
+	{
+	    this->recursive_ranged_erasal(++first, end);
+	    delete first.current;
+	    this->_size--;
+	}
+    }
+
+    template <typename T>
+    void list<T>::erase(list<T>::iterator first, list<T>::iterator end)
+    {
+	//we assume first <= end. Otherwise this functions destroys your program :D
+	auto aux_it = first;
+	aux_it--;
+	aux_it.current->next = end.current;
+	end.current->prev = aux_it.current;
+	this->recursive_ranged_erasal(first, end);
     }
 };
 
